@@ -1,7 +1,8 @@
 import swaggerJsdoc from 'swagger-jsdoc';
+import { swaggerPaths } from './paths';
+import { swaggerComponents } from './components';
 
 const options = {
-  //apiFolder: 'src/api', // define api folder under src folder
   definition: {
     openapi: '3.0.0',
     info: {
@@ -13,6 +14,8 @@ const options = {
         url: 'http://localhost:3000',
       },
     ],
+    components: swaggerComponents,
+    paths: swaggerPaths,
   },
   apis: ['./src/app/api/**/*.ts'], // API files with Swagger comments
 };

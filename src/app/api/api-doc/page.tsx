@@ -1,7 +1,7 @@
 "use client"
 
 import "swagger-ui-react/swagger-ui.css";
-import { swaggerSpec } from "@/lib/swagger";
+import { swaggerSpec } from "@/lib/swagger/swagger";
 import SwaggerUI from "swagger-ui-react";
 import { useEffect, useState } from "react";
 

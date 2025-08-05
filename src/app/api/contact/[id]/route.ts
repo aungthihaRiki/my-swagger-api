@@ -1,36 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * @swagger
- * /api/contact/{id}:
- *   get:
- *     summary: Get a contact by id
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Contact object
- *       404:
- *         description: Contact not found
- *   delete:
- *     summary: Delete a contact by id
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Contact deleted
- *       404:
- *         description: Contact not found
- */
 export async function GET(
   req: Request,
   { params }: { params: { id: string } }
@@ -59,6 +29,23 @@ export async function DELETE(
     const { id } = params;
     console.log("Delete for:", id);
     const contact = await prisma.contact.delete({ where: { id } });
+    return NextResponse.json(contact, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const { id } = params;
+    const { firstName, lastName, phone, email } = await req.json();
+    const contact = await prisma.contact.update({
+      where: { id },
+      data: { firstName, lastName, phone, email },
+    });
     return NextResponse.json(contact, { status: 200 });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
