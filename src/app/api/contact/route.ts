@@ -40,6 +40,8 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { firstName, lastName, phone, email } = await req.json();
+    console.log(" contact data");
+    console.log({ firstName, lastName, phone, email });
     if (!firstName || !lastName || !phone || !email) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -56,4 +58,18 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { id } = await req.json();
+    const contact = await prisma.contact.delete({ where: { id } });
+    return NextResponse.json(contact, { status: 200 });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: "Server error", details: err.message },
+      { status: 500 }
+    );
+  }
+
 }

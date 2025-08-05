@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
+  // output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -15,7 +15,7 @@ datasource db {
 }
 
 model Contact {
-  id        Int     @id @default(autoincrement())
+  id        String     @id @default(cuid())
   firstName String
   lastName  String
   phone     String  @unique
