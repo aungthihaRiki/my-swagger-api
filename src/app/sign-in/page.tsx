@@ -1,16 +1,29 @@
 "use client";
 
 import React, { useState } from 'react'
+import AuthBtn from '../components/AuthBtn';
+import { useFormStatus } from 'react-dom';
+import { loginWithCredentials } from '../../../action/auth';
 
 const page = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+    const { pending } = useFormStatus();
+    const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prev) => ({ ...prev, [id]: value }));
+  };
+
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Replace with your auth logic
-    console.log("Email:", email);
-    console.log("Password:", password);
+    console.log("formData", formData);
+    const req = await loginWithCredentials(formData);
+    console.log("req from Client", req);
   };
 
   return (
@@ -29,11 +42,12 @@ const page = () => {
           </label>
           <input
             id="email"
+            name='email'
             type="email"
             required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={formData.email}
+            onChange={handleChange}
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black"
             placeholder="you@example.com"
           />
         </div>
@@ -44,21 +58,20 @@ const page = () => {
           </label>
           <input
             id="password"
+            name='password'
             type="password"
             required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            value={formData.password}
+            onChange={handleChange}
+            className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-black"
             placeholder="••••••••"
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
-        >
-          Sign In
-        </button>
+
+            <button className='w-full p-2 bg-blue-500 text-white rounded-md' disabled={pending} type="submit">
+        {pending ? "Loading.." : "Login"}
+    </button>
       </form>
     </div>
   );
