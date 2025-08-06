@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import "swagger-ui-react/swagger-ui.css";
 import { swaggerSpec } from "@/lib/swagger/swagger";
@@ -16,5 +16,9 @@ export default function SwaggerPage() {
 
   if (!spec) return <div>Loading Swagger...</div>;
 
-  return <SwaggerUI spec={spec} />;
+  return (
+    <div className="bg-white text-black">
+      <SwaggerUI spec={spec} />
+    </div>
+  );
 }
