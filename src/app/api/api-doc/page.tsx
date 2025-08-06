@@ -4,10 +4,17 @@ import "swagger-ui-react/swagger-ui.css";
 import { swaggerSpec } from "@/lib/swagger/swagger";
 import SwaggerUI from "swagger-ui-react";
 import { useEffect, useState } from "react";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function SwaggerPage() {
+export default async function SwaggerPage() {
   const [spec, setSpec] = useState(null);
+  const session = await auth();
 
+  // !session?.user?.role.includes("ADMIN")
+  if(!session?.user){ 
+    redirect("/sign-in");
+  }
   useEffect(() => {
     fetch("/api/swagger")
       .then((res) => res.json())
