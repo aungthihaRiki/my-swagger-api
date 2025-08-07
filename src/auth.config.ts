@@ -11,9 +11,11 @@ export default {
     Credentials({
       async authorize(credentials) {
         const validatedFields = LoginSchema.safeParse(credentials);
+
         if (validatedFields.success) {
           const { email, password } = validatedFields.data;
           const user = await getUserByEmail(email);
+          
           if (!user || !user.hashedPassword) return null;
 
           const passwordMatch = await bcrypt.compare(
@@ -22,12 +24,13 @@ export default {
           );
 
           if (passwordMatch) {
-            return {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-            };
+            return user
+            // return {
+            //   id: user.id,
+            //   email: user.email,
+            //   name: user.name,
+            //   role: user.role,
+            // };
           }
         }
 

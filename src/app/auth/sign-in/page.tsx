@@ -37,10 +37,11 @@ const page = () => {
     startTransition(async () => {
       login(formData)
       .then((data) => {
-        setError(data.error);
-        if (data.success) {
-          toast.success(data.success);
-        }
+        console.log("data", data);
+        setError(data?.error);
+        // if (data.success) {
+        //   toast.success(data.success);
+        // }
       })
     });
   };
