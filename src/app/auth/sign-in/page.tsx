@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { login } from "../../../../action/login";
 import z, { set } from "zod";
 import { LoginSchema } from "@/schema/LoginSchema";
+import Link from "next/link";
 
 const page = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -35,14 +36,13 @@ const page = () => {
     // }
     setError("");
     startTransition(async () => {
-      login(formData)
-      .then((data) => {
+      login(formData).then((data) => {
         console.log("data", data);
         setError(data?.error);
         // if (data.success) {
         //   toast.success(data.success);
         // }
-      })
+      });
     });
   };
 
@@ -95,13 +95,18 @@ const page = () => {
         </div>
 
         <button
-          className="w-full p-2 bg-blue-500 text-white rounded-md"
+          className="w-full mb-3 p-2 bg-blue-500 text-white rounded-md"
           disabled={pending}
           type="submit"
         >
           {pending ? "Loading.." : "Login"}
         </button>
         {error && <p className="text-red-500 mt-4">{error}</p>}
+        <div className="mx-auto w-full text-center">
+          <Link href="/auth/register" className="text-black">
+            You don't have an account?
+          </Link>
+        </div>
       </form>
       <Toaster />
     </div>
