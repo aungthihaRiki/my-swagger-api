@@ -27,4 +27,13 @@ export const apiAuthPrefix = "/api/auth";
 * The default redirect path after logging in
 * @type {string}
 */
-export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
+export const DEFAULT_LOGIN_REDIRECT = "/userinfo";
+
+/**
+* The path base on which role-based protection is applied
+* @type {string}
+*/
+export const ROLE_PROTECTED_ROUTES: Record<string, string[]> = { 
+  "/dashboard": ["ADMIN"],
+  "/userinfo": ["ADMIN", "USER"],
+};

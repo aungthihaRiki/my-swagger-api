@@ -1,13 +1,17 @@
 import { auth } from "@/auth";
 import NextAuth from "next-auth";
 import authConfig from "./auth.config";
-import { apiAuthPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, publicRoutes } from "./routes";
-import { NextRequest } from "next/server";
+import { apiAuthPrefix, authRoutes, DEFAULT_LOGIN_REDIRECT, publicRoutes, ROLE_PROTECTED_ROUTES } from "./routes";
+import { NextRequest, NextResponse } from "next/server";
+import { UserRole } from "@prisma/client";
 
 // export const { auth: middleware } = NextAuth(authConfig);
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth;
+  const pathname = req.nextUrl.pathname;
+  const userRole = req.auth?.user?.role as UserRole;
+
   console.log("ROUTE: ", req.nextUrl.pathname);
   console.log("IS LOGGEDIN: ", isLoggedIn);
   const isApiAuthRoute = req.nextUrl.pathname.startsWith(apiAuthPrefix);  // always allow
@@ -26,6 +30,18 @@ export default auth((req) => {
   if (!isLoggedIn && !IsPublicRoute) {
     return Response.redirect(new URL("/auth/sign-in", req.nextUrl));
   }
+
+  // 🛡️ Role-based protection
+  for (const route in ROLE_PROTECTED_ROUTES) {
+    if (pathname.startsWith(route)) {
+      const allowedRoles = ROLE_PROTECTED_ROUTES[route];
+      if (!allowedRoles.includes(userRole)) {
+        return NextResponse.redirect(new URL("/unauthorized", req.nextUrl));
+      }
+    }
+  }
+
+  return null;
 });
 
 // export const config = {
