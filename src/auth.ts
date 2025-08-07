@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "@/auth.config";
 import { prisma } from "./lib/prisma";
 import { getUserById } from "./data/user";
+import { UserRole } from "@prisma/client";
 
 export const {
   handlers: { GET, POST },
@@ -11,17 +12,17 @@ export const {
   auth,
 } = NextAuth({
   callbacks: {
-    async session ({ token, session }) {
-      console.log({  sessionToken: token , session})
+    async session({ token, session }) {
+      console.log({ sessionToken: token, session });
       if (token.sub && session.user) {
-        session.user.id = token.sub
+        session.user.id = token.sub;
       }
       if (token.role && session.user) {
-        session.user.role = token.role
+        session.user.role = token.role as UserRole;
       }
-      return session
+      return session;
     },
-    async jwt ({ token }) {
+    async jwt({ token }) {
       // console.log({ token })
       // token.customField = "Custom"
 
@@ -30,8 +31,8 @@ export const {
       if (!existingUser) return token;
 
       token.role = existingUser.role;
-      return token
-    }
+      return token;
+    },
   },
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
