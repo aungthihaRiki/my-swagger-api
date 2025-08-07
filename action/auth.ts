@@ -35,26 +35,24 @@ export const loginWithCredentials = async (formData: Record<string, any>) => {
     email: formData.email,
     password: formData.password,
     role: "ADMIN",
-    redirectTo: "/dashboard",
+    redirectTo: "/",
+    redirect: false,
   };
 
   try {
-    const res = await signIn("credentials", rawFormData);
-
-    console.log("🔹 signIn response:", res);
-  } catch (error: any) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          console.log("Invalid credentials!");
-          return { error: "Invalid credentials!" };
-        default:
-          console.log("Something went wrong!");
-          return { error: "Something went wrong!" };
+    const req: any = await signIn("credentials", rawFormData);
+    console.log("req", req);
+    if (!req || req.error) {
+      // Parse known error format
+      if (req.error?.startsWith("ERR_USER_NOT_FOUND")) {
+        return { error: "User does not exist" };
       }
+      return { error: req.error ?? "Login failed" };
     }
-
-    throw error;
+    return { success: true };
+  } catch (error: any) {
+    console.log(error);
+    return { error: "Unexpected error during login" };
   }
   revalidatePath("/");
 };
